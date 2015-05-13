@@ -24,7 +24,7 @@ namespace Lab6
             Dictionary<Node, int> fScore = new Dictionary<Node, int>();
             while (openSet.Any())
             {
-
+                Console.WriteLine("Ia tvoi rot ebal!");
             }
             
         }
