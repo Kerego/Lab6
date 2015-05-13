@@ -22,11 +22,9 @@ namespace Lab6
             Dictionary<Node,int> gScore = new Dictionary<Node, int>();
             gScore[start] = 0;
             Dictionary<Node, int> fScore = new Dictionary<Node, int>();
-            fScore[start] = gScore[start] + 
-
             while (openSet.Any())
             {
-                var current =  
+
             }
             
         }
