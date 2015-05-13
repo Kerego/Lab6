@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lab6
 {
@@ -10,27 +6,14 @@ namespace Lab6
     {
         static void Main(string[] args)
         {
-
+            Astar();
         }
 
-        static void Astar(Node start, Node goal)
+        static void Astar()
         {
-            List<Node> closedSet = new List<Node>();
-            List<Node> openSet = new List<Node>();
-            openSet.Add(start);
-            List<Node> cameFrom = new List<Node>();
-            Dictionary<Node,int> gScore = new Dictionary<Node, int>();
-            gScore[start] = 0;
-            Dictionary<Node, int> fScore = new Dictionary<Node, int>();
-            while (openSet.Any())
-            {
-                Console.WriteLine("Ia tvoi rot ebal!");
-            }
-            
+            Console.WriteLine("Hule Net?!");
+            Console.ReadKey();
         }
     }
-
-    internal class Node
-    {
-    }
+    
 }
