@@ -16,6 +16,7 @@ namespace Lab6
             dalbaioji design = new dalbaioji();
             design.jora(() => Console.Write("jora"));
             design.jora(() => Console.WriteLine(" cardan"));
+            design.jora(() => Console.WriteLine(" loooooooool"));
             Console.ReadKey();
         }
     }
