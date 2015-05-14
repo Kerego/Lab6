@@ -9,7 +9,7 @@ namespace Lab6
     {
         static void Main(string[] args)
         {
-            int[][] matrix = File.ReadLines("matrix.txt").Select(l => l.Split(' ').Select(int.Parse).ToArray()).ToArray();
+            int[][] matrix = File.ReadAllLines("matrix.txt").Select(l => l.Split(' ').Select(int.Parse).ToArray()).ToArray();
             
             Point start = new Point() { X = 0, Y = 0 };
             Point end = new Point() { X = 16, Y = 16 };
@@ -18,8 +18,8 @@ namespace Lab6
 
             Console.WriteLine("Path:");
             foreach (var res in result)
-                Console.WriteLine(res.X + " " + res.Y);
-            
+                Console.WriteLine($"X={res.X,2}, Y = {res.Y}");
+
             Console.ReadKey();
 
         }
