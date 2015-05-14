@@ -12,10 +12,11 @@ namespace Lab6
             int[][] matrix = File.ReadLines("matrix.txt").Select(l => l.Split(' ').Select(int.Parse).ToArray()).ToArray();
             
             Point start = new Point() { X = 0, Y = 0 };
-            Point end = new Point() { X = 0, Y = 1 };
+            Point end = new Point() { X = 16, Y = 16 };
+
             var result = Astar(start, end, matrix);
 
-            Console.WriteLine("path");
+            Console.WriteLine("Path:");
             foreach (var res in result)
                 Console.WriteLine(res.X + " " + res.Y);
             
@@ -26,9 +27,9 @@ namespace Lab6
         static LinkedList<Point> Astar(Point start, Point end, int[][] matrix)
         {
             Node startNode = new Node() { position = start, cameFrom = null, DistFromStart = 0, HeuristicEstimate = calcHeuristic(start, end) };
-            Queue<Node> openSet = new Queue<Node>();
-            openSet.Enqueue(startNode);
-            Queue<Node> closedSet = new Queue<Node>();
+            LinkedList<Node> openSet = new LinkedList<Node>();
+            openSet.AddLast(startNode);
+            LinkedList<Node> closedSet = new LinkedList<Node>();
 
             while(openSet.Any())
             {
@@ -37,15 +38,16 @@ namespace Lab6
                 if (current.position == end)
                     return GetPathFromNode(current);
 
-                closedSet.Enqueue(openSet.Dequeue());
+                closedSet.AddLast(current);
+                openSet.Remove(current);
 
-                foreach(var neighbour in getNeighbours(current,end,matrix))
+                foreach(var neighbour in getNeighbours(current, end, ref matrix))
                 {
                     if (closedSet.Count(node => node.position == neighbour.position) > 0)
                         continue;
                     var openNode = openSet.FirstOrDefault(node => node.position == neighbour.position);
                     if (openNode == null)
-                        openSet.Enqueue(neighbour);
+                        openSet.AddLast(neighbour);
                     else if(openNode.DistFromStart > neighbour.DistFromStart)
                     {
                         openNode.cameFrom = current;
@@ -55,11 +57,12 @@ namespace Lab6
                 }
             }
 
+
             return new LinkedList<Point>();
             
         }
 
-        private static LinkedList<Node> getNeighbours(Node from, Point end, int[][] matrix)
+        private static LinkedList<Node> getNeighbours(Node from, Point end, ref int[][] matrix)
         {
             var result = new LinkedList<Node>();
 
@@ -68,14 +71,15 @@ namespace Lab6
             neighbours[1] = new Point() { X = from.position.X - 1, Y = from.position.Y };
             neighbours[2] = new Point() { X = from.position.X, Y = from.position.Y + 1 };
             neighbours[3] = new Point() { X = from.position.X, Y = from.position.Y - 1 };
+            matrix[from.position.X][from.position.Y] = 0;
 
-            foreach(var point in neighbours)
+            foreach (var point in neighbours)
             {
                 if (point.X < 0 || point.X >= matrix.Length)
                     continue;
                 if (point.Y < 0 || point.Y >= matrix[0].Length)
                     continue;
-                if ((matrix[point.X][ point.Y] == 0))
+                if ((matrix[point.X][point.Y] == 0))
                     continue;
                 Node neighbour = new Node() { position = point, cameFrom = from, DistFromStart = from.DistFromStart + 1, HeuristicEstimate = calcHeuristic(point, end) };
                 result.AddFirst(neighbour);
