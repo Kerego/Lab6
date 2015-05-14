@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Lab6
 {
@@ -11,9 +12,20 @@ namespace Lab6
 
         static void Astar()
         {
-            Console.WriteLine("Hule Net?!");
+
+            dalbaioji design = new dalbaioji();
+            design.jora(() => Console.Write("jora"));
+            design.jora(() => Console.WriteLine(" cardan"));
             Console.ReadKey();
         }
     }
-    
+
+    internal class dalbaioji
+    {
+        public void jora(Action action)  
+        {
+            action.Invoke();
+        }
+        public string dibil;
+    }
 }
