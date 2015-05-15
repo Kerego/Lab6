@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using static System.Console;
 
 namespace Lab6
 {
@@ -10,21 +11,19 @@ namespace Lab6
         static void Main(string[] args)
         {
             int[][] matrix = File.ReadAllLines("matrix.txt").Select(l => l.Split(' ').Select(int.Parse).ToArray()).ToArray();
-            
-            Point start = new Point() { X = 0, Y = 0 };
-            Point end = new Point() { X = 16, Y = 16 };
+            Vector2 start = new Vector2() { X = 0, Y = 0 };
+            Vector2 end = new Vector2() { X = 16, Y = 16 };
 
             var result = Astar(start, end, matrix);
 
-            Console.WriteLine("Path:");
+            WriteLine("Path:");
             foreach (var res in result)
-                Console.WriteLine($"X={res.X,2}, Y = {res.Y}");
+                WriteLine($"X={res.X,2}, Y = {res.Y}");
 
-            Console.ReadKey();
-
+            ReadKey();
         }
 
-        static LinkedList<Point> Astar(Point start, Point end, int[][] matrix)
+        static LinkedList<Vector2> Astar(Vector2 start, Vector2 end, int[][] matrix)
         {
             Node startNode = new Node() { position = start, cameFrom = null, DistFromStart = 0, HeuristicEstimate = calcHeuristic(start, end) };
             LinkedList<Node> openSet = new LinkedList<Node>();
@@ -35,7 +34,7 @@ namespace Lab6
             {
                 Node current = openSet.OrderBy(node => node.FullPathEstimate).First();
 
-                if (current.position == end)
+                if (Vector2.areEqual(current.position,end))
                     return GetPathFromNode(current);
 
                 closedSet.AddLast(current);
@@ -43,9 +42,7 @@ namespace Lab6
 
                 foreach(var neighbour in getNeighbours(current, end, ref matrix))
                 {
-                    if (closedSet.Count(node => node.position == neighbour.position) > 0)
-                        continue;
-                    var openNode = openSet.FirstOrDefault(node => node.position == neighbour.position);
+                    var openNode = openSet.FirstOrDefault(node => Vector2.areEqual(node.position, neighbour.position));
                     if (openNode == null)
                         openSet.AddLast(neighbour);
                     else if(openNode.DistFromStart > neighbour.DistFromStart)
@@ -53,24 +50,20 @@ namespace Lab6
                         openNode.cameFrom = current;
                         openNode.DistFromStart = neighbour.DistFromStart;
                     }
-                           
                 }
             }
-
-
-            return new LinkedList<Point>();
-            
+            return new LinkedList<Vector2>();
         }
 
-        private static LinkedList<Node> getNeighbours(Node from, Point end, ref int[][] matrix)
+        private static LinkedList<Node> getNeighbours(Node from, Vector2 end, ref int[][] matrix)
         {
             var result = new LinkedList<Node>();
+            Vector2[] neighbours = new Vector2[4];
 
-            Point[] neighbours = new Point[4];
-            neighbours[0] = new Point() { X = from.position.X + 1, Y = from.position.Y };
-            neighbours[1] = new Point() { X = from.position.X - 1, Y = from.position.Y };
-            neighbours[2] = new Point() { X = from.position.X, Y = from.position.Y + 1 };
-            neighbours[3] = new Point() { X = from.position.X, Y = from.position.Y - 1 };
+            neighbours[0] = new Vector2() { X = from.position.X + 1, Y = from.position.Y };
+            neighbours[1] = new Vector2() { X = from.position.X - 1, Y = from.position.Y };
+            neighbours[2] = new Vector2() { X = from.position.X, Y = from.position.Y + 1 };
+            neighbours[3] = new Vector2() { X = from.position.X, Y = from.position.Y - 1 };
             matrix[from.position.X][from.position.Y] = 0;
 
             foreach (var point in neighbours)
@@ -84,14 +77,12 @@ namespace Lab6
                 Node neighbour = new Node() { position = point, cameFrom = from, DistFromStart = from.DistFromStart + 1, HeuristicEstimate = calcHeuristic(point, end) };
                 result.AddFirst(neighbour);
             }
-
             return result;
-
         }
 
-        private static LinkedList<Point> GetPathFromNode(Node node)
+        private static LinkedList<Vector2> GetPathFromNode(Node node)
         {
-            var result = new LinkedList<Point>();
+            var result = new LinkedList<Vector2>();
             var current = node;
             while(current !=null)
             {
@@ -101,30 +92,23 @@ namespace Lab6
             return result;
         }
 
-        static int calcHeuristic(Point from, Point to) => Math.Abs(from.X - to.X) + Math.Abs(from.Y - to.Y);
+        static int calcHeuristic(Vector2 from, Vector2 to) => Math.Abs(from.X - to.X) + Math.Abs(from.Y - to.Y);
 
         private class Node
         {
-            public Point position;
+            public Vector2 position;
             public Node cameFrom;
             public int DistFromStart;
             public int HeuristicEstimate;
             public int FullPathEstimate => DistFromStart + HeuristicEstimate;
         }
 
-        public struct Point
+        public struct Vector2
         {
             public int X;
             public int Y;
-            
-            public static bool operator ==(Point left, Point right)
-            {
-                return left.X == right.X && left.Y == right.Y;
-            }
-            public static bool operator !=(Point left, Point right)
-            {
-                return left.X != right.X || left.Y != right.Y;
-            }
+
+            public static bool areEqual(Vector2 left, Vector2 right) => left.X == right.X && left.Y == right.Y;
         }
     }
 }
