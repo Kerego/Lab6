@@ -10,15 +10,20 @@ namespace Lab6
     {
         static void Main(string[] args)
         {
-            int[][] matrix = File.ReadAllLines("matrix.txt").Select(l => l.Split(' ').Select(int.Parse).ToArray()).ToArray();
+            int[][] matrix = File.ReadAllLines("matrix.txt").Select(l => l.Split(' ').Select(int.Parse).ToArray()).ToArray(); // Reads the matrix from file matrix.txt in debug folder
             Vector2 start = new Vector2() { X = 0, Y = 0 };
             Vector2 end = new Vector2() { X = 16, Y = 16 };
 
             var result = Astar(start, end, matrix);
 
-            WriteLine("Path:");
-            foreach (var res in result)
-                WriteLine($"X={res.X,2}, Y = {res.Y}");
+            if (result.Any())
+            {
+                WriteLine("Path:");
+                foreach (var res in result)
+                    WriteLine($" X={res.X,2}, Y = {res.Y}");
+            }
+            else
+                WriteLine("No path found!");
 
             ReadKey();
         }
